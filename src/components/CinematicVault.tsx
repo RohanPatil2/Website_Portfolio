@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { resumeData } from '../data/resume';
+import { portfolioData, Project } from '../data/portfolioData';
 import { X, ArrowRight, Layers, Cpu, Activity } from 'lucide-react';
 
 const PROJECT_COLORS = [
@@ -24,7 +24,16 @@ const PROJECT_SEEDS = [
   'finance'
 ];
 
-function VaultCard({ project, index, isFullWidth, color, brandColor, onClick }: any) {
+interface VaultCardProps {
+  project: Project;
+  index: number;
+  isFullWidth: boolean;
+  color: string;
+  brandColor: string;
+  onClick: () => void;
+}
+
+const VaultCard: React.FC<VaultCardProps> = ({ project, index, isFullWidth, color, brandColor, onClick }) => {
   const [hovered, setHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   
@@ -80,7 +89,7 @@ function VaultCard({ project, index, isFullWidth, color, brandColor, onClick }: 
         </motion.h3>
         
         <div className="flex flex-wrap gap-3 mb-6 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
-          {project.stack.split(', ').slice(0, 4).map((tech: string, i: number) => (
+          {project.tech.slice(0, 4).map((tech: string, i: number) => (
             <span key={i} className="px-3 py-1 text-xs font-mono text-white bg-black/40 rounded-full border border-white/20 backdrop-blur-md">
               {tech}
             </span>
@@ -123,8 +132,8 @@ export default function CinematicVault() {
 
         {/* Symmetric Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-[400px]" style={{ perspective: 1200 }}>
-          {resumeData.projects.map((project, index) => {
-            const isFullWidth = index === 0 || index === resumeData.projects.length - 1;
+          {portfolioData.projects.map((project, index) => {
+            const isFullWidth = index === 0 || index === portfolioData.projects.length - 1;
             const color = PROJECT_COLORS[index % PROJECT_COLORS.length];
             const brandColor = PROJECT_BRAND_COLORS[index % PROJECT_BRAND_COLORS.length];
 
@@ -169,11 +178,11 @@ export default function CinematicVault() {
                     layoutId={`title-${selectedProject}`}
                     className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter"
                   >
-                    {resumeData.projects[selectedProject].title}
+                    {portfolioData.projects[selectedProject].title}
                   </motion.h2>
 
                   <div className="flex flex-wrap gap-3 mb-12">
-                    {resumeData.projects[selectedProject].stack.split(', ').map((tech, i) => (
+                    {portfolioData.projects[selectedProject].tech.map((tech, i) => (
                       <span key={i} className="px-4 py-2 text-sm font-mono text-cyan-400 bg-cyan-400/10 rounded-full border border-cyan-400/20">
                         {tech}
                       </span>
@@ -187,7 +196,7 @@ export default function CinematicVault() {
                           <Layers className="w-5 h-5 text-cyan-400" /> Architecture & Implementation
                         </h3>
                         <div className="space-y-4">
-                          {resumeData.projects[selectedProject].bullets.map((bullet, i) => (
+                          {portfolioData.projects[selectedProject].details.map((bullet, i) => (
                             <div key={i} className="flex items-start gap-4 text-white/80 text-lg leading-relaxed">
                               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 shadow-[0_0_10px_#00f0ff]" />
                               <span>{bullet}</span>
@@ -202,21 +211,8 @@ export default function CinematicVault() {
                         <h3 className="text-sm font-mono text-white/50 uppercase tracking-widest mb-4 flex items-center gap-2">
                           <Activity className="w-4 h-4 text-amber-400" /> Measurable Impact
                         </h3>
-                        {/* Extract metrics from bullets for visual impact */}
-                        <div className="space-y-6">
-                          {resumeData.projects[selectedProject].bullets
-                            .filter(b => b.includes('%') || b.match(/\d+/))
-                            .slice(0, 3)
-                            .map((bullet, i) => {
-                              const match = bullet.match(/(\d+(?:\.\d+)?%?)/);
-                              const metric = match ? match[0] : 'N/A';
-                              return (
-                                <div key={i}>
-                                  <div className="text-3xl font-black text-amber-400 mb-1">{metric}</div>
-                                  <div className="text-xs text-white/60 leading-tight">{bullet.replace(metric, '')}</div>
-                                </div>
-                              );
-                            })}
+                        <div className="text-white/80 text-sm leading-relaxed">
+                          {portfolioData.projects[selectedProject].impact}
                         </div>
                       </div>
 
@@ -225,7 +221,7 @@ export default function CinematicVault() {
                           <Cpu className="w-4 h-4 text-cyan-400" /> Core Technologies
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {resumeData.projects[selectedProject].stack.split(', ').map((tech, i) => (
+                          {portfolioData.projects[selectedProject].tech.map((tech, i) => (
                             <span key={i} className="text-sm text-white/80 bg-white/10 px-2 py-1 rounded">
                               {tech}
                             </span>

@@ -12,6 +12,7 @@ import ExperienceTimeline from './components/ExperienceTimeline';
 import CinematicVault from './components/CinematicVault';
 import SkillPhysicsMatrix from './components/SkillPhysicsMatrix';
 import CredentialsHub from './components/CredentialsHub';
+import BentoLedger from './components/BentoLedger';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -40,6 +41,7 @@ export default function App() {
                 <a href="#projects" className="hover:text-cyan-400 transition-colors">Projects</a>
                 <a href="#skills" className="hover:text-cyan-400 transition-colors">Skills</a>
                 <a href="#credentials" className="hover:text-cyan-400 transition-colors">Credentials</a>
+                <a href="#ledger" className="hover:text-cyan-400 transition-colors">Ledger</a>
               </div>
             </nav>
 
@@ -49,6 +51,7 @@ export default function App() {
               <CinematicVault />
               <SkillPhysicsMatrix />
               <CredentialsHub />
+              <BentoLedger />
             </main>
 
             <footer className="py-12 text-center text-white/40 text-sm font-mono border-t border-white/5 mt-24">

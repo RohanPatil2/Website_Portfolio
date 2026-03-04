@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as d3 from 'd3-force';
-import { resumeData } from '../data/resume';
+import { portfolioData } from '../data/portfolioData';
 import HoverContextEngine from './HoverContextEngine';
 
 // Define categories and map skills to them
@@ -10,7 +10,7 @@ const CATEGORIES = ['All Nodes', 'GenAI & LLMs', 'Core ML & Deep Learning', 'MLO
 const SKILL_MAPPING: Record<string, { category: string, size: number }> = {
   // Languages
   'Python': { category: 'Languages', size: 65 },
-  'C++': { category: 'Languages', size: 50 },
+  'C++': { category: 'Languages', size: 60 }, // Increased size based on frequency
   'CUDA': { category: 'Languages', size: 45 },
   'SQL': { category: 'Languages', size: 50 },
   'JavaScript': { category: 'Languages', size: 40 },
@@ -21,7 +21,7 @@ const SKILL_MAPPING: Record<string, { category: string, size: number }> = {
   
   // Core ML & Deep Learning
   'PyTorch': { category: 'Core ML & Deep Learning', size: 60 },
-  'TensorFlow': { category: 'Core ML & Deep Learning', size: 50 },
+  'TensorFlow': { category: 'Core ML & Deep Learning', size: 65 }, // Increased
   'Keras': { category: 'Core ML & Deep Learning', size: 40 },
   'scikit-learn': { category: 'Core ML & Deep Learning', size: 50 },
   'XGBoost': { category: 'Core ML & Deep Learning', size: 45 },
@@ -32,12 +32,19 @@ const SKILL_MAPPING: Record<string, { category: string, size: number }> = {
   'TensorRT': { category: 'Core ML & Deep Learning', size: 40 },
   
   // GenAI & LLMs
+  'Large Language Models (LLM)': { category: 'GenAI & LLMs', size: 70 }, // Added and massive
+  'LLMs': { category: 'GenAI & LLMs', size: 70 },
   'Transformers': { category: 'GenAI & LLMs', size: 60 },
   'LangChain': { category: 'GenAI & LLMs', size: 55 },
   'LlamaIndex': { category: 'GenAI & LLMs', size: 50 },
   'Hugging Face': { category: 'GenAI & LLMs', size: 55 },
   'RAG': { category: 'GenAI & LLMs', size: 60 },
-  'LoRA/QLoRA': { category: 'GenAI & LLMs', size: 50 },
+  'LoRA': { category: 'GenAI & LLMs', size: 50 },
+  'PEFT': { category: 'GenAI & LLMs', size: 50 },
+  'GPT': { category: 'GenAI & LLMs', size: 50 },
+  'BERT': { category: 'GenAI & LLMs', size: 50 },
+  'LLaMA': { category: 'GenAI & LLMs', size: 50 },
+  'RLHF': { category: 'GenAI & LLMs', size: 50 },
   'vLLM': { category: 'GenAI & LLMs', size: 45 },
   'Prompt Engineering': { category: 'GenAI & LLMs', size: 50 },
   'Agentic AI': { category: 'GenAI & LLMs', size: 55 },
@@ -62,6 +69,7 @@ const SKILL_MAPPING: Record<string, { category: string, size: number }> = {
   'Grafana': { category: 'MLOps & Cloud', size: 40 },
 
   // Data & Vector DBs
+  'Data Analytics': { category: 'Data & Vector DBs', size: 65 }, // Added
   'Pinecone': { category: 'Data & Vector DBs', size: 50 },
   'ChromaDB': { category: 'Data & Vector DBs', size: 50 },
   'FAISS': { category: 'Data & Vector DBs', size: 45 },
@@ -94,8 +102,14 @@ export default function SkillPhysicsMatrix() {
   const hoveredNodeRef = useRef<string | null>(null); // For canvas loop access
 
   useEffect(() => {
-    // Initialize nodes
-    const allSkills = resumeData.skills.flatMap(g => g.items);
+    // Initialize nodes from portfolioData tech stacks
+    const allSkillsSet = new Set<string>();
+    portfolioData.projects.forEach(p => p.tech.forEach(t => allSkillsSet.add(t)));
+    
+    // Add some core skills that might not be explicitly in project tech stacks but are important
+    ['Python', 'C++', 'TensorFlow', 'Data Analytics', 'Large Language Models (LLM)'].forEach(s => allSkillsSet.add(s));
+
+    const allSkills = Array.from(allSkillsSet);
     
     nodesRef.current = allSkills.map(skill => {
       const mapping = SKILL_MAPPING[skill] || { category: 'Other', size: 30 };

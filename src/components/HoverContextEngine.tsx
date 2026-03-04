@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { resumeData } from '../data/resume';
+import { portfolioData } from '../data/portfolioData';
 import { ExternalLink, Clock, Code2, Briefcase, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -41,13 +41,13 @@ export default function HoverContextEngine({ skillId, position, containerRect }:
     }
 
     // Build relational data dynamically
-    const projects = resumeData.projects
-      .filter(p => p.stack.toLowerCase().includes(skillId.toLowerCase()) || p.bullets.some(b => b.toLowerCase().includes(skillId.toLowerCase())))
+    const projects = portfolioData.projects
+      .filter(p => p.tech.some(t => t.toLowerCase().includes(skillId.toLowerCase())) || p.details.some(b => b.toLowerCase().includes(skillId.toLowerCase())))
       .map(p => ({ title: p.title, type: 'project' as const }));
 
-    const experience = resumeData.experience
-      .filter(e => e.bullets.some(b => b.toLowerCase().includes(skillId.toLowerCase())))
-      .map(e => ({ company: e.company, type: 'experience' as const }));
+    const experience = portfolioData.organizations
+      .filter(e => e.description.toLowerCase().includes(skillId.toLowerCase()) || e.role.toLowerCase().includes(skillId.toLowerCase()))
+      .map(e => ({ company: e.organization, type: 'experience' as const }));
 
     // Mock size for now, ideally passed from parent
     const mockSize = 50; 

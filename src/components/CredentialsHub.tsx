@@ -1,7 +1,8 @@
 import { motion, useInView } from 'motion/react';
 import { useRef, useState, useEffect } from 'react';
 import { resumeData } from '../data/resume';
-import { GraduationCap, BookOpen, Award, ChevronDown, ExternalLink } from 'lucide-react';
+import { portfolioData } from '../data/portfolioData';
+import { GraduationCap, BookOpen, Award, ChevronDown, ExternalLink, ShieldCheck, Trophy } from 'lucide-react';
 
 // Animated GPA Counter
 function GPACounter({ targetGPA }: { targetGPA: number }) {
@@ -33,11 +34,7 @@ function GPACounter({ targetGPA }: { targetGPA: number }) {
 }
 
 export default function CredentialsHub() {
-  const [activeTab, setActiveTab] = useState<'publications' | 'patents'>('publications');
   const [expandedAbstract, setExpandedAbstract] = useState<number | null>(null);
-
-  const publications = resumeData.extra.find(e => e.type.includes('Publications'))?.items || [];
-  const patents = resumeData.extra.find(e => e.type.includes('Patents'))?.items || [];
 
   return (
     <section id="credentials" className="py-32 px-6 relative z-10">
@@ -97,29 +94,14 @@ export default function CredentialsHub() {
             ))}
           </div>
 
-          {/* Publications & Patents (The "Research Dossier") */}
+          {/* Publications (The "Research Dossier") */}
           <div className="lg:col-span-7">
-            <div className="glass-refraction rounded-3xl p-2 mb-8 flex gap-2">
-              <button
-                onClick={() => setActiveTab('publications')}
-                className={`flex-1 py-3 px-6 rounded-2xl text-sm font-mono uppercase tracking-widest transition-all ${
-                  activeTab === 'publications' ? 'bg-white/10 text-white shadow-lg' : 'text-white/40 hover:text-white/80'
-                }`}
-              >
-                Publications
-              </button>
-              <button
-                onClick={() => setActiveTab('patents')}
-                className={`flex-1 py-3 px-6 rounded-2xl text-sm font-mono uppercase tracking-widest transition-all ${
-                  activeTab === 'patents' ? 'bg-white/10 text-white shadow-lg' : 'text-white/40 hover:text-white/80'
-                }`}
-              >
-                Patents
-              </button>
-            </div>
+            <h3 className="text-xl font-mono text-white/50 uppercase tracking-widest flex items-center gap-3 mb-6">
+              <BookOpen className="w-6 h-6 text-cyan-400" /> Research Dossier
+            </h3>
 
             <div className="space-y-4">
-              {(activeTab === 'publications' ? publications : patents).map((item, i) => (
+              {portfolioData.publications.map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 10 }}
@@ -133,16 +115,14 @@ export default function CredentialsHub() {
                   >
                     <div className="flex-1 pr-6">
                       <div className="flex items-center gap-3 mb-2">
-                        {activeTab === 'publications' ? (
-                          <BookOpen className="w-4 h-4 text-cyan-400" />
-                        ) : (
-                          <Award className="w-4 h-4 text-amber-400" />
-                        )}
+                        <span className="text-xs font-mono text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20 uppercase">
+                          {item.publisher}
+                        </span>
                         <span className="text-xs font-mono text-white/40 uppercase">
-                          {activeTab === 'publications' ? 'Research Paper' : 'Utility Patent'}
+                          {item.date}
                         </span>
                       </div>
-                      <h4 className="text-lg font-semibold text-white leading-snug">{item}</h4>
+                      <h4 className="text-lg font-semibold text-white leading-snug">{item.title}</h4>
                     </div>
                     <div className={`p-2 rounded-full bg-white/5 transition-transform duration-300 ${expandedAbstract === i ? 'rotate-180' : ''}`}>
                       <ChevronDown className="w-4 h-4 text-white/50" />
@@ -158,7 +138,7 @@ export default function CredentialsHub() {
                     <div className="p-6 pt-0 text-sm text-white/60 leading-relaxed">
                       <div className="border-t border-white/10 pt-4 mt-2">
                         <p className="mb-4">
-                          Abstract data is currently classified or pending public release. This research focuses on advancing state-of-the-art methodologies in {item.includes('Stock') ? 'financial time-series forecasting' : 'machine learning applications'}.
+                          {item.abstract}
                         </p>
                         <button className="flex items-center gap-2 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors">
                           <ExternalLink className="w-3 h-3" /> View External Record
@@ -175,11 +155,11 @@ export default function CredentialsHub() {
         {/* Certifications: Verified Cryptographic Badges */}
         <div className="mt-24">
           <h3 className="text-xl font-mono text-white/50 uppercase tracking-widest flex items-center gap-3 mb-8 justify-center">
-            <Award className="w-6 h-6 text-cyan-400" /> Verified Certifications
+            <ShieldCheck className="w-6 h-6 text-cyan-400" /> Verified Certifications
           </h3>
           
           <div className="flex flex-wrap justify-center gap-6">
-            {resumeData.certifications.map((cert, i) => (
+            {portfolioData.certifications.map((cert, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -187,28 +167,56 @@ export default function CredentialsHub() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="group relative w-48 h-48 flex items-center justify-center cursor-pointer"
+                className={`group relative flex items-center justify-center cursor-pointer ${cert.isMajor ? 'w-56 h-56' : 'w-48 h-48'}`}
               >
                 {/* Hexagon SVG Background */}
-                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full drop-shadow-[0_0_10px_rgba(0,240,255,0.2)] group-hover:drop-shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all duration-500">
-                  <polygon points="50 3, 93 25, 93 75, 50 97, 7 75, 7 25" fill="rgba(255,255,255,0.02)" stroke="rgba(0,240,255,0.3)" strokeWidth="1" className="group-hover:stroke-cyan-400 transition-colors duration-500" />
+                <svg viewBox="0 0 100 100" className={`absolute inset-0 w-full h-full transition-all duration-500 ${cert.isMajor ? 'drop-shadow-[0_0_15px_rgba(245,158,11,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(245,158,11,0.6)]' : 'drop-shadow-[0_0_10px_rgba(0,240,255,0.2)] group-hover:drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]'}`}>
+                  <polygon points="50 3, 93 25, 93 75, 50 97, 7 75, 7 25" fill={cert.isMajor ? "rgba(245,158,11,0.05)" : "rgba(255,255,255,0.02)"} stroke={cert.isMajor ? "rgba(245,158,11,0.5)" : "rgba(0,240,255,0.3)"} strokeWidth={cert.isMajor ? "2" : "1"} className={`transition-colors duration-500 ${cert.isMajor ? 'group-hover:stroke-amber-400' : 'group-hover:stroke-cyan-400'}`} />
                 </svg>
                 
                 <div className="relative z-10 text-center p-4">
-                  <Award className="w-8 h-8 text-cyan-400 mx-auto mb-3 opacity-80 group-hover:opacity-100 transition-opacity" />
-                  <div className="text-xs font-bold text-white leading-tight line-clamp-3">
-                    {cert}
+                  <Award className={`w-8 h-8 mx-auto mb-3 opacity-80 group-hover:opacity-100 transition-opacity ${cert.isMajor ? 'text-amber-400 w-10 h-10' : 'text-cyan-400'}`} />
+                  <div className={`font-bold text-white leading-tight line-clamp-3 ${cert.isMajor ? 'text-sm' : 'text-xs'}`}>
+                    {cert.title}
                   </div>
+                  <div className="text-[10px] font-mono text-white/50 mt-2 uppercase">{cert.issuer}</div>
                   
                   {/* Hover State Link */}
                   <div className="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full scale-75 group-hover:scale-100">
-                    <span className="text-xs font-mono text-cyan-400 flex items-center gap-1">
+                    <span className={`text-xs font-mono flex items-center gap-1 ${cert.isMajor ? 'text-amber-400' : 'text-cyan-400'}`}>
                       Verify <ExternalLink className="w-3 h-3" />
                     </span>
                   </div>
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+
+        {/* Hackathons & Competitive Programming Carousel */}
+        <div className="mt-24">
+          <h3 className="text-xl font-mono text-white/50 uppercase tracking-widest flex items-center gap-3 mb-8 justify-center">
+            <Trophy className="w-6 h-6 text-emerald-400" /> Hackathons & Competitions
+          </h3>
+          
+          <div className="relative overflow-hidden w-full max-w-5xl mx-auto">
+            <div className="flex gap-4 overflow-x-auto pb-8 custom-scrollbar snap-x">
+              {portfolioData.hackathons.map((hackathon, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="snap-center shrink-0 w-64 p-6 glass-refraction rounded-2xl border border-white/5 hover:border-emerald-400/30 transition-colors group"
+                >
+                  <Trophy className="w-6 h-6 text-emerald-400/50 mb-4 group-hover:text-emerald-400 transition-colors" />
+                  <div className="text-sm font-bold text-white leading-snug">
+                    {hackathon}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
 

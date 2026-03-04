@@ -1,12 +1,9 @@
 import { motion } from 'motion/react';
 import { resumeData } from '../data/resume';
-import { Terminal } from 'lucide-react';
+import { portfolioData } from '../data/portfolioData';
+import { Terminal, Award, BookOpen, ShieldCheck } from 'lucide-react';
 
 export default function BentoLedger() {
-  const leadershipItems = resumeData.extra.find(e => e.type.includes('Leadership'))?.items || [];
-  const publications = resumeData.extra.find(e => e.type.includes('Publications'))?.items || [];
-  const patents = resumeData.extra.find(e => e.type.includes('Patents'))?.items || [];
-
   return (
     <section id="ledger" className="py-24 px-6 relative z-10">
       <div className="max-w-6xl mx-auto">
@@ -23,7 +20,7 @@ export default function BentoLedger() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(200px,auto)]">
           
-          {/* Terminal Feed for Leadership */}
+          {/* Terminal Feed for Organizations & Volunteering */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -35,22 +32,15 @@ export default function BentoLedger() {
               <h3 className="text-sm font-mono text-white/60 uppercase tracking-widest">Activity Log</h3>
             </div>
             <div className="space-y-4 font-mono text-xs md:text-sm flex-1 overflow-y-auto custom-scrollbar pr-2">
-              {leadershipItems.map((item, i) => {
-                const parts = item.split('|').map(s => s.trim());
-                const role = parts[0];
-                const loc = parts[1];
-                const date = parts[2];
-                return (
-                  <div key={i} className="flex flex-col gap-1 border-l-2 border-cyan-400/30 pl-3 py-1">
-                    <div className="text-white/40">[{date ? date.toUpperCase() : 'LOG'}]</div>
-                    <div className="text-white">
-                      <span className="text-cyan-400">DEPLOYED:</span> {role} Protocol
-                    </div>
-                    {loc && <div className="text-amber-400">LOCATION: {loc}</div>}
-                    <div className="text-emerald-400">[SUCCESS]</div>
+              {portfolioData.organizations.map((org, i) => (
+                <div key={i} className={`flex flex-col gap-1 border-l-2 pl-3 py-1 ${org.isHighPrestige ? 'border-amber-400/50' : 'border-cyan-400/30'}`}>
+                  <div className="text-white/40">[{org.date.toUpperCase()}]</div>
+                  <div className="text-white">
+                    <span className={org.isHighPrestige ? 'text-amber-400 font-bold' : 'text-cyan-400'}>EXECUTED:</span> {org.role} @ {org.organization}
                   </div>
-                );
-              })}
+                  <div className="text-emerald-400/80">[IMPACT: {org.description}]</div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -85,29 +75,27 @@ export default function BentoLedger() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-sm font-mono text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4">Publications</h3>
+                <h3 className="text-sm font-mono text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-cyan-400" /> Publications
+                </h3>
                 <ul className="space-y-3">
-                  {publications.map((pub, i) => (
+                  {portfolioData.publications.map((pub, i) => (
                     <li key={i} className="text-sm text-white/80 flex gap-3">
                       <span className="text-cyan-400 font-mono">›</span>
-                      <span>{pub}</span>
+                      <span>{pub.title} <span className="text-white/40 text-xs">({pub.publisher})</span></span>
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h3 className="text-sm font-mono text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4">Patents & Certs</h3>
+                <h3 className="text-sm font-mono text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-400" /> Certifications
+                </h3>
                 <ul className="space-y-3">
-                  {patents.map((pat, i) => (
-                    <li key={i} className="text-sm text-white/80 flex gap-3">
-                      <span className="text-amber-400 font-mono">›</span>
-                      <span>{pat}</span>
-                    </li>
-                  ))}
-                  {resumeData.certifications.slice(0, 2).map((cert, i) => (
+                  {portfolioData.certifications.slice(0, 4).map((cert, i) => (
                     <li key={`cert-${i}`} className="text-sm text-white/80 flex gap-3">
                       <span className="text-amber-400 font-mono">›</span>
-                      <span>{cert}</span>
+                      <span>{cert.title} <span className="text-white/40 text-xs">({cert.issuer})</span></span>
                     </li>
                   ))}
                 </ul>
