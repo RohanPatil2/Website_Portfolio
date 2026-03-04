@@ -6,6 +6,13 @@ import StatBadges from './StatBadges';
 import TerminalText from './TerminalText';
 import { useEffect } from 'react';
 
+const ROLES = [
+  "AI Engineer | GenAI Specialist",
+  "LLM Architect",
+  "Machine Learning Engineer",
+  "Robotics Researcher"
+];
+
 export default function Hero() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -78,7 +85,11 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <TerminalText text="AI Engineer | GenAI Specialist" delay={400} />
+          <TerminalText 
+            texts={ROLES} 
+            delay={400} 
+            intervalMs={5000} 
+          />
         </motion.div>
 
         <motion.p

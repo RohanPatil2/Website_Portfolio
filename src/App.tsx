@@ -37,8 +37,8 @@ export default function App() {
               <div className="text-xl font-bold tracking-tighter text-cyan-400">RP</div>
               <div className="hidden md:flex gap-6 text-sm font-mono uppercase tracking-widest">
                 <a href="#experience" className="hover:text-cyan-400 transition-colors">Experience</a>
-                <a href="#projects" className="hover:text-cyan-400 transition-colors">Vault</a>
-                <a href="#skills" className="hover:text-cyan-400 transition-colors">Matrix</a>
+                <a href="#projects" className="hover:text-cyan-400 transition-colors">Projects</a>
+                <a href="#skills" className="hover:text-cyan-400 transition-colors">Skills</a>
                 <a href="#credentials" className="hover:text-cyan-400 transition-colors">Credentials</a>
               </div>
             </nav>
