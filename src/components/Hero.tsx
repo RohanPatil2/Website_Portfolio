@@ -3,7 +3,7 @@ import { resumeData } from '../data/resume';
 import { ChevronDown, Download, ArrowRight, Github, Linkedin } from 'lucide-react';
 import Magnetic from './Magnetic';
 import StatBadges from './StatBadges';
-import TerminalText from './TerminalText';
+import VaporizeTextCycle, { Tag } from './ui/vapour-text-effect';
 import { useEffect } from 'react';
 
 const ROLES = [
@@ -80,15 +80,29 @@ export default function Hero() {
         </motion.h1>
 
         <motion.div
-          className="text-xl md:text-3xl text-cyan-400 font-mono mb-8 max-w-2xl h-12 relative flex justify-center items-center"
+          className="text-xl md:text-3xl text-cyan-400 font-mono mb-8 max-w-2xl h-12 relative flex justify-center items-center w-full"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <TerminalText 
-            texts={ROLES} 
-            delay={400} 
-            intervalMs={5000} 
+          <VaporizeTextCycle
+            texts={ROLES}
+            font={{
+              fontFamily: "monospace",
+              fontSize: "30px",
+              fontWeight: 400
+            }}
+            color="rgb(0, 240, 255)"
+            spread={3}
+            density={5}
+            animation={{
+              vaporizeDuration: 1.5,
+              fadeInDuration: 0.8,
+              waitDuration: 2
+            }}
+            direction="left-to-right"
+            alignment="center"
+            tag={Tag.H2}
           />
         </motion.div>
 

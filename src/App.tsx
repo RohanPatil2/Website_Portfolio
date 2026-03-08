@@ -13,6 +13,7 @@ import CinematicVault from './components/CinematicVault';
 import SkillPhysicsMatrix from './components/SkillPhysicsMatrix';
 import CredentialsHub from './components/CredentialsHub';
 import BentoLedger from './components/BentoLedger';
+import { StickyFooter } from './components/ui/sticky-footer';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -54,9 +55,7 @@ export default function App() {
               <BentoLedger />
             </main>
 
-            <footer className="py-12 text-center text-white/40 text-sm font-mono border-t border-white/5 mt-24">
-              <p>© {new Date().getFullYear()} Rohan Upendra Patil. All rights reserved.</p>
-            </footer>
+            <StickyFooter />
           </motion.div>
         )}
       </AnimatePresence>
