@@ -2,6 +2,7 @@ import { resumeData } from '../data/resume';
 import { Timeline } from './ui/timeline';
 import { Terminal, Activity, Cpu } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Badge } from './ui/badge-1';
 
 export default function ExperienceTimeline() {
   const timelineData = resumeData.experience.map((exp, idx) => {
@@ -43,10 +44,15 @@ export default function ExperienceTimeline() {
                   <Cpu className="w-3 h-3" /> Stack Nodes
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {stackNodes.map(tech => (
-                    <span key={tech} className="px-2 py-0.5 text-[10px] font-mono text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 rounded">
+                  {stackNodes.map((tech, i) => (
+                    <Badge 
+                      key={tech} 
+                      variant={i % 2 === 0 ? "teal-subtle" : "blue-subtle"} 
+                      size="sm" 
+                      capitalize={false}
+                    >
                       {tech}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
               </div>

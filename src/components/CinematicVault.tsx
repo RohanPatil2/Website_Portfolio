@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { portfolioData, Project } from '../data/portfolioData';
 import { X, ArrowRight, Layers, Cpu, Activity } from 'lucide-react';
+import { Badge } from './ui/badge-1';
+import { GlowingEffect } from './ui/glowing-effect';
 
 const PROJECT_COLORS = [
   'rgba(16, 185, 129, 0.2)', // Emerald
@@ -42,8 +44,8 @@ const VaultCard: React.FC<VaultCardProps> = ({ project, index, isFullWidth, colo
     offset: ["start end", "end start"]
   });
 
-  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [10, 0, -10]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
+  const rotateXScroll = useTransform(scrollYProgress, [0, 0.5, 1], [10, 0, -10]);
+  const scaleScroll = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
   
   const seed = PROJECT_SEEDS[index % PROJECT_SEEDS.length];
 
@@ -55,16 +57,29 @@ const VaultCard: React.FC<VaultCardProps> = ({ project, index, isFullWidth, colo
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       style={{
-        rotateX,
-        scale,
+        rotateX: rotateXScroll,
+        scale: scaleScroll,
         background: hovered ? color : 'rgba(255, 255, 255, 0.02)',
         transition: 'background 0.5s ease',
         perspective: 1000
+      }}
+      whileHover={{ 
+        y: -10,
+        scale: 1.02,
+        transition: { duration: 0.3, ease: "easeOut" }
       }}
       className={`group relative cursor-pointer rounded-3xl overflow-hidden glass-refraction chromatic-box-hover ${
         isFullWidth ? 'md:col-span-2 aspect-[21/9]' : 'md:col-span-1 aspect-square md:aspect-auto'
       }`}
     >
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={3}
+      />
       {/* Subtle Background Image */}
       <div className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-700 pointer-events-none">
         <img 
@@ -88,18 +103,28 @@ const VaultCard: React.FC<VaultCardProps> = ({ project, index, isFullWidth, colo
           {project.title}
         </motion.h3>
         
-        <div className="flex flex-wrap gap-3 mb-6 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="flex flex-wrap gap-2 mb-6 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
           {project.tech.slice(0, 4).map((tech: string, i: number) => (
-            <span key={i} className="px-3 py-1 text-xs font-mono text-white bg-black/40 rounded-full border border-white/20 backdrop-blur-md">
+            <Badge 
+              key={i} 
+              variant="inverted" 
+              size="sm" 
+              capitalize={false}
+            >
               {tech}
-            </span>
+            </Badge>
           ))}
         </div>
 
         <div className="overflow-hidden h-0 group-hover:h-12 transition-all duration-500 ease-in-out">
-          <button className="flex items-center gap-2 text-sm font-mono uppercase tracking-widest text-white mt-4 drop-shadow-md" style={{ color: brandColor }}>
+          <motion.button 
+            whileHover={{ scale: 1.05, x: 5 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 text-sm font-mono uppercase tracking-widest text-white mt-4 drop-shadow-md transition-colors duration-300 hover:text-white" 
+            style={{ color: brandColor }}
+          >
             View Architecture <ArrowRight className="w-4 h-4" />
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -181,11 +206,16 @@ export default function CinematicVault() {
                     {portfolioData.projects[selectedProject].title}
                   </motion.h2>
 
-                  <div className="flex flex-wrap gap-3 mb-12">
+                  <div className="flex flex-wrap gap-2 mb-12">
                     {portfolioData.projects[selectedProject].tech.map((tech, i) => (
-                      <span key={i} className="px-4 py-2 text-sm font-mono text-cyan-400 bg-cyan-400/10 rounded-full border border-cyan-400/20">
+                      <Badge 
+                        key={i} 
+                        variant="turbo" 
+                        size="md" 
+                        capitalize={false}
+                      >
                         {tech}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
 
@@ -222,9 +252,14 @@ export default function CinematicVault() {
                         </h3>
                         <div className="flex flex-wrap gap-2">
                           {portfolioData.projects[selectedProject].tech.map((tech, i) => (
-                            <span key={i} className="text-sm text-white/80 bg-white/10 px-2 py-1 rounded">
+                            <Badge 
+                              key={i} 
+                              variant={i % 2 === 0 ? "teal-subtle" : "purple-subtle"} 
+                              size="sm" 
+                              capitalize={false}
+                            >
                               {tech}
-                            </span>
+                            </Badge>
                           ))}
                         </div>
                       </div>
